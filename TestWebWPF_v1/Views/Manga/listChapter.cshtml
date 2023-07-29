@@ -1,0 +1,58 @@
+﻿@model IEnumerable<TestWebWPF_v1.Models.ChuongTruyen>
+
+@{
+    ViewData["Title"] = "listChapter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>listChapter</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ChapterId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChapterName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChapterTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChapterDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MangaId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChapterId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChapterName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChapterTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChapterDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MangaId)
+            </td>
+            <td>
+                <a class="btn btn-primary" href="@Url.Action("layAnhChuong", "Manga", new {  idChapter=item.ChapterId,idManga=item.MangaId})">Chi tiết</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

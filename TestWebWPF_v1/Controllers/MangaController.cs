@@ -11,6 +11,7 @@ namespace TestWebWPF_v1.Controllers
         private static HttpClient hc = new HttpClient();
         private static string strUrl = @"https://localhost:7132/Truyen-tranh";
         public List<BoTruyen> dstruyen = new List<BoTruyen>();
+        public List<string> dsChapter = new List<string>();
         [Route("")]
         [Route("Index")]
         public IActionResult Index()
@@ -24,6 +25,7 @@ namespace TestWebWPF_v1.Controllers
                 var kq = conn.Result.Content.ReadAsAsync<List<BoTruyen>>();
                 kq.Wait();
                 dstruyen = kq.Result.ToList();
+                dsChapter = getDsChater();
                 return View(kq.Result.ToList());
             }
             catch (Exception)
@@ -114,6 +116,47 @@ namespace TestWebWPF_v1.Controllers
                 return ViewBag.request("Không thể thêm truyện");
             }
             return ViewBag.request("Không thể thêm truyện"); ;
+        }
+        [Route("")]
+        [Route("dsChuongTruyen")]
+        public IActionResult listChapter(string Id)
+        {
+            try
+            {
+                var conn = hc.GetAsync(strUrl + @"/"+Id);
+                conn.Wait();
+                if (conn.Result.IsSuccessStatusCode == false)
+                    return ViewBag.request("Không thể kết nối tới máy chủ");
+                var kq = conn.Result.Content.ReadAsAsync<List<ChuongTruyen>>();
+                kq.Wait();
+                return View(kq.Result.ToList());
+            }
+            catch (Exception)
+            {
+                return ViewBag.request("Không thể tải Danh sách truyện.");
+            }
+        }
+        [Route("")]
+        [Route("layDsAnhCuaChuong")]
+        public IActionResult layAnhChuong(string idChapter, string idManga)
+        {
+            try
+            {
+                var conn = hc.GetAsync(strUrl + @"/" + idManga+@"/"+idChapter+ @"/getDsImage");
+                conn.Wait();
+                if (conn.Result.IsSuccessStatusCode == false)
+                    return ViewBag.request("Không thể kết nối tới máy chủ");
+                var kq = conn.Result.Content.ReadAsAsync<List<string>>();
+                kq.Wait();
+                var data = kq.Result.ToList();
+                data.Sort();
+                ViewBag.DsImage=data;
+                return View();
+            }
+            catch (Exception)
+            {
+                return ViewBag.request("Không thể tải Danh sách truyện.");
+            }
         }
 
         public string ranDomId(List<string> dstruyen)

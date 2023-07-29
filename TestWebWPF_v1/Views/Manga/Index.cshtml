@@ -69,7 +69,7 @@
             </td>
             <td>
                     <a href="@Url.Action("formcreateChapter","Manga",new { Id=item.MangaId})" class="btn btn-primary">Thêm Chương</a>|
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    <a href="@Url.Action("listChapter","Manga",new { Id=item.MangaId})" class="btn btn-primary">Danh sách chương</a>|
                 @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
                 @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
             </td>
