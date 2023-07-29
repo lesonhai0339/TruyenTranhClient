@@ -1,0 +1,42 @@
+﻿@model TestWebWPF_v1.Models.BoTruyen
+
+@{
+    ViewData["Title"] = "formThemManga";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4>Thêm truyện</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateManga" enctype="multipart/form-data" method="post">
+            
+            <label class="control-label">Tên truyện</label>
+            <input type="text" name="MangaName" class="form-control" />
+            
+            <label class="control-label">Ghi chú</label>
+            <input type="text" name="MangaDetails" class="form-control" />
+            
+            <label class="control-label">Ảnh bìa</label>
+            <input type="file" name="MangaImage" class="form-control" />
+            
+            <label class="control-label">Tên khác</label>
+            <input type="text" name="MangaAlternateName" class="form-control" />
+            
+            <label lass="control-label">Tác giả</label>
+            <input type="text" name="MangaAuthor" class="form-control" />
+            
+            <label class="control-label">Họa sĩ</label>
+            <input type="text" name="MangaArtist" class="form-control" />
+            
+            <label class="control-label">Loại truyện</label>
+            <select name="MangaGenre">
+                <option value="Oneshot">Oneshot</option>
+                <option value="Series">Series</option>
+            </select>
+            
+            
+            <input type="submit" value="Thêm" class="btn btn-primary" />
+       </form>
+    </div>
+</div>
+

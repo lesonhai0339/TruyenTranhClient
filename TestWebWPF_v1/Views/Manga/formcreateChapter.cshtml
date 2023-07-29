@@ -1,0 +1,37 @@
+﻿@model TestWebWPF_v1.Models.ChuongTruyen
+
+@{
+    ViewData["Title"] = "createChapter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateChapter" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <label class="control-label">Tên Chương</label>
+                <input type="text" name="tenChuong" class="form-control" />
+            </div>
+            <div class="row">
+                <label class="control-label">Tiêu để chương</label>
+                <input type="text" name="TieuDe" class="form-control" />
+            </div>
+            <div class="row">
+                <label class="control-label">Url</label>
+            </div>
+            <div class="row">
+                <textarea name="url" rows="8" cols="50"></textarea>
+            </div>
+            <div class="row">
+                <input type="file" name="file" multiple />
+                <input type="text" name="MangaId" value="@ViewBag.MangaId" hidden="hidden" />
+            </div>
+            <div class="row">
+                <p>
+                    <input type="submit" value="Tạo" class="btn btn-primary" />
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
