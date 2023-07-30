@@ -10,7 +10,7 @@
 <p>
     <a asp-action="formThemManga" class="btn btn-primary" >Thêm truyện</a>
 </p>
-<table class="table">
+<table id="myTable" class="table">
     <thead>
         <tr>
             <th>
@@ -42,7 +42,7 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+            <tr id="Chapter_@item.MangaId">
             <td>
                 @Html.DisplayFor(modelItem => item.MangaId)
             </td>
@@ -68,10 +68,10 @@
                 @Html.DisplayFor(modelItem => item.MangaGenre)
             </td>
             <td>
-                    <a href="@Url.Action("formcreateChapter","Manga",new { Id=item.MangaId})" class="btn btn-primary">Thêm Chương</a>|
-                    <a href="@Url.Action("listChapter","Manga",new { Id=item.MangaId})" class="btn btn-primary">Danh sách chương</a>|
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                    <a href="@Url.Action("formcreateChapter","Manga",new { Id=item.MangaId})" class="btn btn-primary">Thêm Chương</a>
+                    <a href="@Url.Action("listChapter","Manga",new { Id=item.MangaId})" class="btn btn-primary">Danh sách chương</a>
+                    <a href="@Url.Action("formSuaTruyen","Manga",new { Id=item.MangaId})" class="btn btn-primary">Sửa truyện</a>
+                    <button type="submit" onclick="return confirmDelete('@item.MangaId')" class="btn btn-primary">Xóa Tuyện</button>
             </td>
         </tr>
 }
@@ -86,6 +86,28 @@
         // Nếu có query string "success" và giá trị là "true", hiển thị thông báo
         if (successParam === 'true') {
             alert("Thành công");
+        }
+        function confirmDelete(MangaId) {
+            var result = confirm("Bạn có chắc chắn muốn xóa truyện này?");
+            if (result) {
+                delete_Click(MangaId);
+            }
+            return result;
+        }
+        function delete_Click(MangaId) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    alert("Đã xóa thành công!");
+                    var trElement = document.getElementById('Chapter_' + MangaId);// if only one id
+                    if (trElement) {
+                        trElement.remove();
+                    }
+                }
+            };
+            var strUrl = "/DeleteManga-"+MangaId;
+            xhttp.open("POST", strUrl, true);
+            xhttp.send();
         }
     </script>
 }

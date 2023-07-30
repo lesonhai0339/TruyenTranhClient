@@ -9,34 +9,62 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="CreateManga" enctype="multipart/form-data" method="post">
-            
-            <label class="control-label">Tên truyện</label>
-            <input type="text" name="MangaName" class="form-control" />
-            
-            <label class="control-label">Ghi chú</label>
-            <input type="text" name="MangaDetails" class="form-control" />
-            
-            <label class="control-label">Ảnh bìa</label>
-            <input type="file" name="MangaImage" class="form-control" />
-            
-            <label class="control-label">Tên khác</label>
-            <input type="text" name="MangaAlternateName" class="form-control" />
-            
-            <label lass="control-label">Tác giả</label>
-            <input type="text" name="MangaAuthor" class="form-control" />
-            
-            <label class="control-label">Họa sĩ</label>
-            <input type="text" name="MangaArtist" class="form-control" />
-            
+            <div class="row">
+                <label class="control-label">Tên truyện</label>
+                <input type="text" name="MangaName" class="form-control" onblur="validateInput(this)" required />
+                <span class="error-msg"></span>
+            </div>
+            <div class="row">
+                <label class="control-label">Ghi chú</label>
+                <input type="text" name="MangaDetails" class="form-control" onblur="validateInput(this)" required />
+                <span class="error-msg"></span>
+            </div>
+            <div class="row">
+                <label class="control-label">Ảnh bìa</label>
+                <input type="file" name="MangaImage" class="form-control" />
+            </div>
+            <div class="row">
+                <label class="control-label">Tên khác</label>
+                <input type="text" name="MangaAlternateName" class="form-control" onblur="validateInput(this)" required />
+                <span class="error-msg"></span>
+            </div>
+            <div class="row">
+                <label lass="control-label">Tác giả</label>
+                <input type="text" name="MangaAuthor" class="form-control" onblur="validateInput(this)" required />
+                <span class="error-msg"></span>
+            </div>
+            <div class="row">
+                <label class="control-label">Họa sĩ</label>
+                <input type="text" name="MangaArtist" class="form-control" onblur="validateInput(this)" required />
+                <span class="error-msg"></span>
+            </div>
+            <div class="row">
             <label class="control-label">Loại truyện</label>
-            <select name="MangaGenre">
-                <option value="Oneshot">Oneshot</option>
-                <option value="Series">Series</option>
-            </select>
-            
-            
-            <input type="submit" value="Thêm" class="btn btn-primary" />
+                <select name="MangaGenre">
+                    <option value="Oneshot">Oneshot</option>
+                    <option value="Series">Series</option>
+                </select>
+            </div>
+
+            <div class="row" style="margin-top:10px;">
+                <input type="submit" value="Thêm" class="btn btn-primary" />
+            </div>
        </form>
     </div>
 </div>
+@section CreateManga{
+    <script>
+        function validateInput(inputElement) {
+            var inputValue = inputElement.value.trim();
+            var errorElement = inputElement.nextElementSibling;
 
+            if (inputValue === "") {
+                errorElement.textContent = "Vui lòng nhập thông tin.";
+                errorElement.classList.add("error-msg");
+            } else {
+                errorElement.textContent = "";
+                errorElement.classList.remove("error-msg");
+            }
+        }
+    </script>
+}

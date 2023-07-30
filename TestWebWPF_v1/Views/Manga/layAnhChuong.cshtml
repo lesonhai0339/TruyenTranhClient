@@ -1,8 +1,8 @@
-﻿<div class="container col-8">
+﻿<div class="container col-12">
     <div class="row-cols-6 align-content-lg-center">
         @foreach (var a in ViewBag.DsImage)
         {
-            <img src="@a" class="img-thumbnail w-50 h-50 col-12" alt="Ảnh" onerror="this.src='/image/error.gif'" />
+            <img src="@a" class="img-thumbnail w-100 h-100 col-12" alt="Ảnh" onerror="this.src='/image/error.gif'" />
         }
     </div>
 </div>

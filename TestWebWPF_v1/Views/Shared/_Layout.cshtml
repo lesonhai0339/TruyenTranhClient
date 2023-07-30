@@ -49,5 +49,7 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
     @await RenderSectionAsync("Manga", required: false)
+    @RenderSection("EditManga", required: false)
+    @RenderSection("CreateManga", required: false)
 </body>
 </html>

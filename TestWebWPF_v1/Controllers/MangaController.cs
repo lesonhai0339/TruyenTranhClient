@@ -5,55 +5,46 @@ using TestWebWPF_v1.Models;
 
 namespace TestWebWPF_v1.Controllers
 {
-    [Route("Admin")]
     public class MangaController : Controller
     {
         private static HttpClient hc = new HttpClient();
         private static string strUrl = @"https://localhost:7132/Truyen-tranh";
-        public List<BoTruyen> dstruyen = new List<BoTruyen>();
-        public List<string> dsChapter = new List<string>();
-        [Route("")]
-        [Route("Index")]
+        private List<BoTruyen> _dsBotruyen;
+        private List<string> _dsChuongtruyen;
+        public MangaController()
+        {
+            _dsBotruyen = getDSBoTruyen();
+            _dsChuongtruyen = getDsChapter();
+        }
+        // Lấy danh sách truyện
         public IActionResult Index()
         {
-            try
-            {
-                var conn = hc.GetAsync(strUrl + @"/GetAllManga");
-                conn.Wait();
-                if (conn.Result.IsSuccessStatusCode == false)
-                    return ViewBag.request("Không thể kết nối tới máy chủ");
-                var kq = conn.Result.Content.ReadAsAsync<List<BoTruyen>>();
-                kq.Wait();
-                dstruyen = kq.Result.ToList();
-                dsChapter = getDsChater();
-                return View(kq.Result.ToList());
-            }
-            catch (Exception)
-            {
-                return ViewBag.request("Không thể tải Danh sách truyện.");
-            }
+            return View(_dsBotruyen);
         }
-        [Route("")]
-        [Route("Create")]
+
+        /*--------------------------------------------------------Begin Action Manga-------------------------------------------*/
+
+        //Form tạo bộ truyện
+        [Route("CreateManga")]
         public IActionResult formThemManga()
         {
             return View();
         }
-        [Route("")]
-        [Route("CreateManga")]
-        public IActionResult CreateManga(string MangaName,string MangaDetails,IFormFile MangaImage,string MangaAlternateName
+        //Action tạo bộ truyện
+        [Route("ActionCreateManga")]
+        public IActionResult CreateManga(string MangaName,string MangaDetails,IFormFile? MangaImage,string MangaAlternateName
             ,string MangaAuthor,string MangaArtist,string MangaGenre)
         {
             try
             {
-                List<string> ds = dstruyen.Select(x => x.MangaId).ToList();// phải lấy tất cả bộ truyện sau đó mới dùng được
+                List<string> ds = _dsBotruyen.Select(x => x.MangaId).ToList();// phải lấy tất cả bộ truyện sau đó mới dùng được
                 string Id = ranDomId(ds);
 
                 var formData = new MultipartFormDataContent();
                 formData.Add(new StringContent(Id), "MangaId");
                 formData.Add(new StringContent(MangaName), "MangaName");
                 formData.Add(new StringContent(MangaDetails), "MangaDetails");
-                formData.Add(new StreamContent(MangaImage.OpenReadStream()), "MangaImage", MangaImage.FileName);
+                if(MangaImage!=null) formData.Add(new StreamContent(MangaImage.OpenReadStream()), "MangaImage", MangaImage.FileName);
                 formData.Add(new StringContent(MangaAlternateName), "MangaAlternateName");
                 formData.Add(new StringContent(MangaAuthor), "MangaAuthor");
                 formData.Add(new StringContent(MangaArtist), "MangaArtist");
@@ -70,20 +61,79 @@ namespace TestWebWPF_v1.Controllers
             }
             return ViewBag.request("Không thể thêm truyện");
         }
-        [Route("")]
-        [Route("{Id}/Create")]
+
+        //Form sửa thông tin bộ truyện
+        [Route("EditManga-{Id}")]
+        public IActionResult formSuaTruyen(string Id)
+        {
+            BoTruyen? a = _dsBotruyen.FirstOrDefault(x => x.MangaId == Id);
+            return View(a);
+        }
+        //Hàm sửa thông tin của bộ truyện
+        [Route("ActionEditManga")]
+        public IActionResult SuaTruyen(string MangaId, string? MangaName, string? MangaDetails, IFormFile? MangaImage, string? MangaAlternateName
+            , string? MangaAuthor, string? MangaArtist, string? MangaGenre)
+        {
+            try
+            {
+                var formData = new MultipartFormDataContent();
+                formData.Add(new StringContent(MangaId), "MangaId");
+                if (MangaName != null) formData.Add(new StringContent(MangaName), "MangaName");
+                if (MangaDetails != null) formData.Add(new StringContent(MangaDetails), "MangaDetails");
+                if (MangaImage != null) formData.Add(new StreamContent(MangaImage.OpenReadStream()), "MangaImage", MangaImage.FileName);
+                if (MangaAlternateName != null) formData.Add(new StringContent(MangaAlternateName), "MangaAlternateName");
+                if (MangaAuthor != null) formData.Add(new StringContent(MangaAuthor), "MangaAuthor");
+                if (MangaArtist != null) formData.Add(new StringContent(MangaArtist), "MangaArtist");
+                if (MangaGenre != null) formData.Add(new StringContent(MangaGenre), "MangaGenre");
+                string url = strUrl + @"/EditManga/" + MangaId;
+                var response = hc.PutAsync(url, formData);
+                response.Wait();
+                if (response.Result.IsSuccessStatusCode)
+                    return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return ViewBag.request("Không thể thêm truyện");
+            }
+            return ViewBag.request("Không thể thêm truyện");
+        }
+
+        [HttpPost]
+        [Route("DeleteManga-{MangaId}")]
+        public IActionResult xoaTruyen(string MangaId)
+        {
+            try
+            {
+                string url = strUrl + @"/Delete/" + MangaId;
+                var response = hc.DeleteAsync(url);
+                response.Wait();
+                if (response.Result.IsSuccessStatusCode)
+                    return RedirectToAction("Index");
+            }
+            catch (Exception)
+            {
+                return ViewBag.request("Không thể thêm truyện");
+            }
+            return ViewBag.request("Không thể thêm truyện");
+        }
+        /*-------------------------------------------------------End Action Manga------------------------------------------------*/
+        /*--------------------------------------------------------Begin Action Chapter-------------------------------------------*/
+
+        //Form tạo chương truyện
+        [Route("{Id}/CreateChapter")]
         public IActionResult formcreateChapter(string Id)
         {
             ViewBag.MangaId = Id;
             return View();
         }
-        [Route("")]
-        [Route("CreateChapter")]
+
+        //Action tạo chương truyện
+        [Route("ActionCreateChapter")]
         public IActionResult CreateChapter(
             string MangaId,string TieuDe,string tenChuong, List<IFormFile> file,List<string > dsurl)
         {
             try { 
-                List<string> ds = getDsChater(); //phải tạo hàm để lấy tất cả chương truyện sao đó mới dùng được
+                List<string> ds = _dsChuongtruyen; //phải tạo hàm để lấy tất cả chương truyện sao đó mới dùng được
                 string Id = "c"+ranDomId(ds);
 
                 var formdata =new MultipartFormDataContent() ;
@@ -117,13 +167,14 @@ namespace TestWebWPF_v1.Controllers
             }
             return ViewBag.request("Không thể thêm truyện"); ;
         }
-        [Route("")]
-        [Route("dsChuongTruyen")]
+
+        //Form lấy danh sách chương truyện của bộ truyện
+        [Route("{Id}/Chapter")]
         public IActionResult listChapter(string Id)
         {
             try
             {
-                var conn = hc.GetAsync(strUrl + @"/"+Id);
+                var conn = hc.GetAsync(strUrl + @"/" + Id);
                 conn.Wait();
                 if (conn.Result.IsSuccessStatusCode == false)
                     return ViewBag.request("Không thể kết nối tới máy chủ");
@@ -136,8 +187,9 @@ namespace TestWebWPF_v1.Controllers
                 return ViewBag.request("Không thể tải Danh sách truyện.");
             }
         }
-        [Route("")]
-        [Route("layDsAnhCuaChuong")]
+
+        //Form lấy danh sách ảnh của chương truyện
+        [Route("{idManga}/{idChapter}")]
         public IActionResult layAnhChuong(string idChapter, string idManga)
         {
             try
@@ -159,6 +211,10 @@ namespace TestWebWPF_v1.Controllers
             }
         }
 
+        /*--------------------------------------------------------End Action Chapter-------------------------------------------*/
+        /*--------------------------------------------------------Hàm-------------------------------------------*/
+
+        //Hàm random mã số để tạo mangaId và chapterId
         public string ranDomId(List<string> dstruyen)
         {
             Random data = new Random();
@@ -177,7 +233,9 @@ namespace TestWebWPF_v1.Controllers
                 return randomNumber;
             }
         }
-        private List<string> getDsChater()
+
+        //Hàm lấy danh sách chương truyện
+        private List<string> getDsChapter()
         {
             List<string> dsChapter = new List<string>();
             var conn = hc.GetAsync(strUrl + @"/GetdsChapter");
@@ -189,6 +247,26 @@ namespace TestWebWPF_v1.Controllers
             dsChapter = kq.Result.ToList();
 
             return dsChapter;
+        }
+
+        //Hàm lấy danh sách bộ truyện
+        public List<BoTruyen> getDSBoTruyen()
+        {
+            try
+            {
+                var conn = hc.GetAsync(strUrl + @"/GetAllManga");
+                conn.Wait();
+                if (conn.Result.IsSuccessStatusCode == false)
+                    return ViewBag.request("Không thể kết nối tới máy chủ");
+                var kq = conn.Result.Content.ReadAsAsync<List<BoTruyen>>();
+                kq.Wait();
+                var dstruyen = kq.Result.ToList();
+                return dstruyen;
+            }
+            catch (Exception)
+            {
+                return ViewBag.request("Không thể tải Danh sách truyện.");
+            }  
         }
     }
 }

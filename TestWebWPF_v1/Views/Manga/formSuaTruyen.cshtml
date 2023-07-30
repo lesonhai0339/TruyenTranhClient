@@ -1,0 +1,57 @@
+﻿@model TestWebWPF_v1.Models.BoTruyen
+@{
+    ViewData["Title"] = "formSuaTruyen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Sửa truyện</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="SuaTruyen" enctype="multipart/form-data" method="post">
+
+            <input asp-for="MangaId" class="form-control" name="MangaId" readonly />
+
+            <label class="control-label">Tên truyện</label>
+            <input asp-for="MangaName" type="text" name="MangaName" class="form-control" />
+
+            <label class="control-label">Ghi chú</label>
+            <input asp-for="MangaDetails" type="text" name="MangaDetails" class="form-control" />
+
+            <label class="control-label">Ảnh bìa</label>
+            <img src="@Model.MangaImage" alt="Img" onerror="this.src='/image/error.gif'" id="anhbia" class="img-thumbnail w-25 h-25"/>
+            <input type="file" name="MangaImage" class="form-control" id="imgThumbnail"/>
+
+            <label class="control-label">Tên khác</label>
+            <input asp-for="MangaAlternateName" type="text" name="MangaAlternateName" class="form-control" />
+
+            <label lass="control-label">Tác giả</label>
+            <input asp-for="MangaAuthor" type="text" name="MangaAuthor" class="form-control" />
+
+            <label class="control-label">Họa sĩ</label>
+            <input asp-for="MangaArtist" type="text" name="MangaArtist" class="form-control" />
+
+            <label class="control-label">Loại truyện</label>
+            <select id="MangaGenre" name="MangaGenre">
+                <option value="Oneshot">Oneshot</option>
+                <option value="Series">Series</option>
+            </select>   
+
+            <br />
+            <input type="submit" value="Sửa" class="btn btn-primary" />
+        </form>
+    </div>
+</div>
+@section EditManga{
+    <script>
+        $(document).ready(function () {
+            var selectedValue = "@Model.MangaGenre";
+            $("#MangaGenre").val(selectedValue);
+        });
+        $("#imgThumbnail").on("change", function () {
+            var a = document.getElementById("anhbia");
+            a.src = URL.createObjectURL(this.files[0]);
+        })
+    </script>
+}
+
