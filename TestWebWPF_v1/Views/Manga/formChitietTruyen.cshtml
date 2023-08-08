@@ -1,0 +1,82 @@
+﻿@model TestWebWPF_v1.Models.BoTruyen
+
+@{
+    ViewData["Title"] = "formChitietTruyen";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Chi tiết truyện</h1>
+@{
+    if (ViewBag.request != null){
+        <div class="alert alert-success align-content-center">@ViewBag.request</div>}
+}
+<div>
+    <h4>BoTruyen</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            Id
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MangaId)
+        </dd>
+        <dt class = "col-sm-2">
+            Tên truyện
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MangaName)
+        </dd>
+        <dt class = "col-sm-2">
+            Nội dung
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MangaDetails)
+        </dd>
+        <dt class = "col-sm-2">
+            Ảnh bìa
+        </dt>
+        <dd class = "col-sm-10">
+            <img style="width:100px;height:100px;" src="@Model.MangaImage" class="img-thumbnail" alt="Ảnh" onerror="this.src='/image/error.gif'"/>
+        </dd>
+        <dt class = "col-sm-2">
+            Tên khác
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MangaAlternateName)
+        </dd>
+        <dt class = "col-sm-2">
+            Tác giả
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MangaAuthor)
+        </dd>
+        <dt class = "col-sm-2">
+            Họa sĩ
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MangaArtist)
+        </dd>
+        <dt class = "col-sm-2">
+            Loại truyện
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MangaGenre)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a href="@Url.Action("formcreateChapter","Manga",new { Id=Model.MangaId})" class="btn btn-primary">Thêm Chương</a>
+    <br />
+    <a href="@Url.Action("listChapter","Manga",new { Id=Model.MangaId})" class="btn btn-primary">Danh sách chương</a>
+    <br />
+    <a class="btn btn-primary" asp-action="Index">Quay lại</a>
+</div>
+@section Manga{
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () {
+                $('.alert').hide();
+            }, 3000);
+        });
+    </script>
+}

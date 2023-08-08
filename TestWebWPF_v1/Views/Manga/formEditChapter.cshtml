@@ -1,21 +1,33 @@
 ﻿@model TestWebWPF_v1.Models.ChuongTruyen
 
 @{
-    ViewData["Title"] = "createChapter";
+    ViewData["Title"] = "formEditChapter";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<h1>Sửa chương</h1>
+
+<hr />
+<p>
+    <a href="@Url.Action("formChitietTruyen","Manga",new { Id=@ViewBag.MangaId,success=false})" class="btn btn-primary">Quay lại</a>
+</p>
+
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="CreateChapter" enctype="multipart/form-data" method="post">
+        <form asp-action="EditChapter" enctype="multipart/form-data" method="post">
+            <div class="row">
+                <label class="control-label">Mã Chương</label>
+                <input asp-for=ChapterId type="text" name="maChuong" class="form-control" readonly/>
+                <span class="error-msg"></span>
+            </div>
             <div class="row">
                 <label class="control-label">Tên Chương</label>
-                <input type="text" name="tenChuong" class="form-control" onblur="validateInput(this)" required />
+                <input asp-for=ChapterName type="text" name="tenChuong" class="form-control" onblur="validateInput(this)" required />
                 <span class="error-msg"></span>
             </div>
             <div class="row">
                 <label class="control-label">Tiêu để chương</label>
-                <input type="text" name="TieuDe" class="form-control" onblur="validateInput(this)" required />
+                <input asp-for="ChapterTitle" type="text" name="TieuDe" class="form-control" onblur="validateInput(this)" required />
                 <span class="error-msg"></span>
             </div>
             <div class="row">
@@ -30,7 +42,7 @@
             </div>
             <div class="row">
                 <p>
-                    <input id="submit" type="submit" value="Tạo" class="btn btn-primary" />
+                    <input id="submit" type="submit" value="Sửa" class="btn btn-primary" />
                 </p>
             </div>
         </form>
@@ -50,14 +62,5 @@
                 errorElement.classList.remove("error-msg");
             }
         }
-        $('#submit').on('click',function(){
-            var a = document.querySelector('textarea[name="dsurl"]').value;
-            var b = document.querySelector('input[name="file"]').files[0];
-            if (a === "" && b === undefined) {
-                alert("Bạn phải nhập ảnh hoặc url ảnh");
-                return false;
-            }
-            return true;
-        })
     </script>
 }

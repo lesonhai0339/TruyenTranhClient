@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TestWebWPF_v1.Models.ChuongTruyen>
+﻿@model IEnumerable<TestWebWPF_v1.Models.View.chapterView>
 
 @{
     ViewData["Title"] = "listChapter";
@@ -8,51 +8,79 @@
 <h1>listChapter</h1>
 
 <p>
-    <a asp-action="Index" class="btn btn-primary">Quay lại</a>
+    <a href="@Url.Action("formChitietTruyen","Manga",new { Id=@ViewBag.MangaId,success=false})" class="btn btn-primary">Quay lại</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ChapterId)
+                @Html.DisplayNameFor(model => model.Chapter_Id)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ChapterName)
+                @Html.DisplayNameFor(model => model.Chapter_Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ChapterTitle)
+                @Html.DisplayNameFor(model => model.Chapter_Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ChapterDate)
+                @Html.DisplayNameFor(model => model.Chapter_Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.MangaId)
+                @Html.DisplayNameFor(model => model.Manga_Id)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr id="Chapter_@item.Chapter_Id">
             <td>
-                @Html.DisplayFor(modelItem => item.ChapterId)
+                    @Html.DisplayFor(modelItem => item.Chapter_Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ChapterName)
+                    @Html.DisplayFor(modelItem => item.Chapter_Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ChapterTitle)
+                    @Html.DisplayFor(modelItem => item.Chapter_Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ChapterDate)
+                    @Html.DisplayFor(modelItem => item.Chapter_Date)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.MangaId)
+                    @Html.DisplayFor(modelItem => item.Manga_Id)
             </td>
             <td>
-                <a class="btn btn-primary" href="@Url.Action("layAnhChuong", "Manga", new {  idChapter=item.ChapterId,idManga=item.MangaId})">Chi tiết</a>
+                <a class="btn btn-primary" href="@Url.Action("layAnhChuong", "Manga", new {  idChapter=item.Chapter_Id,idManga=item.Manga_Id,listAnh=item.Imagechapter})">Chi tiết</a>
+                    <a class="btn btn-primary" href="@Url.Action("formEditChapter", "Manga", new {  ChapterId=item.Chapter_Id,IdManga=item.Manga_Id})">Sửa</a>
+                    <button type="submit" onclick="return confirmDeleteChapter('@item.Manga_Id','@item.Chapter_Id')" class="btn btn-primary">Xóa Chương</button>
             </td>
         </tr>
 }
     </tbody>
 </table>
+@section Chapter{
+    <script>
+        function confirmDeleteChapter(MangaId,ChapterId) {
+            var result = confirm("Bạn có chắc chắn muốn xóa chương truyện này?");
+            if (result) {
+                deleteChapter_Click(MangaId,ChapterId);
+            }
+            return result;
+        }
+        function deleteChapter_Click(MangaId,ChapterId) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    alert("Đã xóa thành công!");
+                    var trElement = document.getElementById('Chapter_' + ChapterId);// if only one id
+                    if (trElement) {
+                        trElement.remove();
+                    }
+                }
+            };
+            var strUrl = "/" + MangaId + "/Delete/" + ChapterId;
+            xhttp.open("POST", strUrl, true);
+            xhttp.send();
+        }
+    </script>
+}

@@ -1,8 +1,83 @@
-﻿<div class="container col-12">
-    <div class="row-cols-6 align-content-lg-center">
+﻿
+<div class="container col-8 align-items-center justify-content-center">
+    @{int x = 0;
+        //<div class="row col-12 " style="display:block">
+        //    <img id="Image" src="../wwwroot/image/loading.gif" class="img-thumbnail" alt="Ảnh" onerror="this.src='/image/error.gif'" loading="lazy" />
+        //</div>
         @foreach (var a in ViewBag.DsImage)
         {
-            <img src="@a" class="img-thumbnail w-100 h-100 col-12" alt="Ảnh" onerror="this.src='/image/error.gif'" />
+            while (x < ViewBag.DsImage.Count)
+            {
+                <div class="row col-12 " style="display:block">
+                    <img id="@x" src="../wwwroot/image/loading.gif" class="img-thumbnail w-100 h-100" alt="Ảnh" onerror="this.src='/image/error.gif'" loading="lazy" />
+                </div>
+                x++;
+            } 
         }
-    </div>
+    }
 </div>
+@section DetailsChapter{
+    <script>
+        var imageIds = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(ViewBag.DsImage));
+        async function createBlobUrlAsync(imageUrl) {
+            const headers = {
+                'Access-Control-Allow-Origin': '*'};
+            return new Promise((resolve, reject) => {
+                fetch(imageUrl, {
+                    method: 'GET',
+                    mode: 'cors',
+                    responseType: 'blob',
+                    headers
+                })
+                .then(response => response.blob())
+                .then(blobData => {
+                    resolve(blobData);
+                })
+                .catch(error => {
+                    reject(error);
+                });
+            });
+        }
+
+        async function processImagesAsync() {
+            var promises = imageIds.map(imageUrl => createBlobUrlAsync(imageUrl));
+            try {
+                //Xử lý và tạo blob cho từng image sau đó xuất chúng
+                    for (var i = 0; i < imageIds.length; i++) {
+                        const blobData = await createBlobUrlAsync(imageIds[i]);
+                        const blobUrl = URL.createObjectURL(blobData);
+                        var imgElement = document.getElementById(i);
+                        imgElement.src = blobUrl;
+                    }
+                
+                //Xử lý và tạo blob cho tất cả các image rồi mới xuất
+                    //var blobs = await Promise.all(promises);
+
+                    //for (var i = 0; i < blobs.length; i++) {
+                    //    var blobData = blobs[i];
+                    //    console.log("3 " + blobData);
+                    //    var blobUrl = URL.createObjectURL(blobData);
+                    //    console.log("4 " + blobUrl);
+                    //    var imgElement = document.getElementById(i);
+                    //    imgElement.src = blobUrl;
+                    //}
+
+                    //Chạy khá vui
+                        //for (const imageUrl of imageIds) {
+                        //    const blobData = await createBlobUrlAsync(imageUrl);
+                        //    const blobUrl = URL.createObjectURL(blobData);
+                        //    const imgElement = document.getElementById("Image");
+                        //    imgElement.style.width="500px";
+                        //    imgElement.style.height = "500px";
+                        //    imgElement.src = blobUrl;
+
+                        //    await new Promise(resolve => setTimeout(resolve, 100));
+                        //}
+                    
+            } catch (error) {
+                console.error('Lỗi khi tải dữ liệu Blob:', error);
+            }
+        }
+        processImagesAsync();
+    </script>
+}

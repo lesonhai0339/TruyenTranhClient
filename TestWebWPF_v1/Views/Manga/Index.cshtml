@@ -23,9 +23,6 @@
                 Ghi chú
             </th>
             <th>
-                Ảnh truyện
-            </th>
-            <th>
                 Tên khác
             </th>
             <th>
@@ -53,9 +50,6 @@
                 @Html.DisplayFor(modelItem => item.MangaDetails)
             </td>
             <td>
-                    <img src="@item.MangaImage" class="img-thumbnail w-50 h-50" alt="Ảnh" onerror="this.src='/image/error.gif'" />
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.MangaAlternateName)
             </td>
             <td>
@@ -68,10 +62,11 @@
                 @Html.DisplayFor(modelItem => item.MangaGenre)
             </td>
             <td>
-                    <a href="@Url.Action("formcreateChapter","Manga",new { Id=item.MangaId})" class="btn btn-primary">Thêm Chương</a>
-                    <a href="@Url.Action("listChapter","Manga",new { Id=item.MangaId})" class="btn btn-primary">Danh sách chương</a>
-                    <a href="@Url.Action("formSuaTruyen","Manga",new { Id=item.MangaId})" class="btn btn-primary">Sửa truyện</a>
-                    <button type="submit" onclick="return confirmDelete('@item.MangaId')" class="btn btn-primary">Xóa Tuyện</button>
+                <a href="@Url.Action("formChitietTruyen","Manga",new { Id=item.MangaId,success=false})" class="btn btn-primary">Chi tiết</a>
+                <br/>
+                <a href="@Url.Action("formSuaTruyen","Manga",new { Id=item.MangaId})" class="btn btn-primary">Sửa truyện</a>
+                <br />
+                <button type="submit" onclick="return confirmDelete('@item.MangaId')" class="btn btn-primary">Xóa Tuyện</button>
             </td>
         </tr>
 }
